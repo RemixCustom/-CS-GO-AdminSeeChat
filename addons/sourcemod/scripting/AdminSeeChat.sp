@@ -14,6 +14,8 @@ new String: TsDead[16];
 new String: CTsName[32];
 new String: CTsDead[16];
 
+new String: Access[32];
+
 new g_iEnable;
 
 public Plugin:myinfo = 
@@ -48,7 +50,7 @@ public Action:OnPlayerChatTeam(client, const String:command[], args)
 			{
 				if(IsValidClient(i))
 				{
-					if (CheckCommandAccess(client, "sm_admin", ADMFLAG_GENERIC))
+					if (CheckCommandAccess(client, Access, ADMFLAG_GENERIC))
 					{
 						receiver = GetClientTeam(i)
 						if (sender != receiver)
@@ -94,6 +96,7 @@ LoadConfig()
 		KvGetString(hConfig, "Ts DeadTag", TsDead, sizeof(TsDead));
 		KvGetString(hConfig, "CTs Name", CTsName, sizeof(CTsName));
 		KvGetString(hConfig, "CTs DeadTag", CTsDead, sizeof(CTsDead));
+		KvGetString(hConfig, "Command access", Access, sizeof(Access));
 	}
 	else
 	{
