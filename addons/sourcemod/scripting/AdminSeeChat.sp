@@ -18,7 +18,7 @@ new String: Access[32];
 
 new g_iEnable;
 
-public Plugin:myinfo = 
+public Plugin:myinfo =
 {
 	name = "Admin See Chat",
 	author = PLUGIN_AUTHOR,
@@ -42,7 +42,7 @@ public Action:OnPlayerChatTeam(client, const String:command[], args)
 		new receiver;
 		if ((client > 0) && IsClientInGame(client))
 		{
-			if(message[0] == 0 || IsChatTrigger())
+			if(message[0] == '/' || message[0] == '@' || message[0] == 0)
 			{
 				return Plugin_Handled;
 			}
@@ -85,7 +85,7 @@ LoadConfig()
 	new Handle: hConfig = CreateKeyValues("AdminSeeChat");
 	if(!FileExists(ConfigPath))
 	{
-		SetFailState("[AdminSeeChat] 'addons/sourcemod/ASCHconfig.cfg' not found!");
+		SetFailState("[AdminSeeChat] 'addons/sourcemod/configs/ASCHconfig.cfg' not found!");
 		return;
 	}
 	FileToKeyValues(hConfig, ConfigPath);
@@ -113,6 +113,6 @@ stock bool:IsValidClient(client, bool:alive = false)
     {
         return true;
     }
-   
+
     return false;
 }
