@@ -50,7 +50,7 @@ public Action:OnPlayerChatTeam(client, const String:command[], args)
 			{
 				if(IsValidClient(i))
 				{
-					if (CheckCommandAccess(client, Access, ADMFLAG_GENERIC))
+					if (CheckCommandAccess(i, Access, ADMFLAG_GENERIC))
 					{
 						receiver = GetClientTeam(i)
 						if (sender != receiver)
