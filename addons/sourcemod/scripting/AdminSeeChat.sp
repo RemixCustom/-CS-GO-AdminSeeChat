@@ -55,22 +55,10 @@ public Action:OnPlayerChatTeam(client, const String:command[], args)
 						receiver = GetClientTeam(i)
 						if (sender != receiver)
 						{
-							if (GetClientTeam(client) == CS_TEAM_CT && IsPlayerAlive(client))
-							{
-								CPrintToChat(i, "{blue}%s %N : %s",CTsName, client, message)
-							}
-							else if (GetClientTeam(client) == CS_TEAM_CT)
-							{
-								CPrintToChat(i, "{blue}%s%s %N : %s",CTsDead, CTsName, client, message)
-							}
-							else if (GetClientTeam(client) == CS_TEAM_T && IsPlayerAlive(client))
-							{
-								CPrintToChat(i, "{orange}%s %N : %s",TsName, client, message)
-							}
-							else if (GetClientTeam(client) == CS_TEAM_T)
-							{
-								CPrintToChat(i, "{orange}%s%s %N : %s",TsDead, TsName, client, message)
-							}
+							CPrintToChat(i, "%s%s%s %N : %s", 
+								(sender == CS_TEAM_CT) ? "{blue}" : (sender == CS_TEAM_T) ? "{orange}" : "{gray}",
+								IsPlayerAlive(client) ? "" : (sender == CS_TEAM_T) ? TsDead : (sender == CS_TEAM_CT) ? CTsDead : "", 
+								CTsName, client, message)
 						}
 					}
 				}
@@ -93,9 +81,9 @@ LoadConfig()
 	{
 		g_iEnable = KvGetNum(hConfig, "Enable", 1);
 		KvGetString(hConfig, "Ts Name", TsName, sizeof(TsName));
-		KvGetString(hConfig, "Ts DeadTag", TsDead, sizeof(TsDead));
+		KvGetString(hConfig, "Ts DeadTag", TsDead, sizeof(TsDead), "*DEAD*");
 		KvGetString(hConfig, "CTs Name", CTsName, sizeof(CTsName));
-		KvGetString(hConfig, "CTs DeadTag", CTsDead, sizeof(CTsDead));
+		KvGetString(hConfig, "CTs DeadTag", CTsDead, sizeof(CTsDead), "*DEAD*");
 		KvGetString(hConfig, "Command access", Access, sizeof(Access));
 	}
 	else
