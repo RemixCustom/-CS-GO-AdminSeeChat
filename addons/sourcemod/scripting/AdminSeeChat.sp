@@ -57,8 +57,8 @@ public Action:OnPlayerChatTeam(client, const String:command[], args)
 						{
 							CPrintToChat(i, "%s%s%s %N : %s", 
 								(sender == CS_TEAM_CT) ? "{blue}" : (sender == CS_TEAM_T) ? "{orange}" : "{gray}",
-								IsPlayerAlive(client) ? "" : (sender == CS_TEAM_T) ? TsDead : (sender == CS_TEAM_CT) ? CTsDead : "", 
-								CTsName, client, message)
+								IsPlayerAlive(client) ? "" : (sender == CS_TEAM_T) ? TsDead : (sender == CS_TEAM_CT) ? CTsDead : "",
+								(sender == CS_TEAM_CT) ? CTsName : (sender == CS_TEAM_T) ? TsName : "", client, message)
 						}
 					}
 				}
