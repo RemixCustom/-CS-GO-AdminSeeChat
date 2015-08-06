@@ -6,19 +6,19 @@
 #define PLUGIN_VERSION "1.0"
 #define PLUGIN_AUTHOR "ESK0"
 
-static String: ConfigPath[PLATFORM_MAX_PATH];
+char ConfigPath[PLATFORM_MAX_PATH];
 
-new String: TsName[32];
-new String: TsDead[16];
+char TsName[32];
+char TsDead[16];
 
-new String: CTsName[32];
-new String: CTsDead[16];
+char CTsName[32];
+char CTsDead[16];
 
-new String: Access[32];
+char Access[32];
 
-new g_iEnable;
+int g_iEnable;
 
-public Plugin:myinfo =
+public Plugin myinfo =
 {
 	name = "Admin See Chat",
 	author = PLUGIN_AUTHOR,
@@ -32,33 +32,33 @@ public OnPluginStart()
 	LoadConfig();
 	AddCommandListener(OnPlayerChatTeam, "say_team");
 }
-public Action:OnPlayerChatTeam(client, const String:command[], args)
+public Action OnPlayerChatTeam(client, const char[] command, args)
 {
 	if(g_iEnable)
 	{
-		new String:message[256]
-		new sender = GetClientTeam(client)
-		GetCmdArg(1, message, sizeof(message))
-		new receiver;
-		if ((client > 0) && IsClientInGame(client))
+		char message[256];
+		int sender = GetClientTeam(client);
+		int receiver;
+		GetCmdArg(1, message, sizeof(message));
+		if (IsValidClient(client))
 		{
 			if(message[0] == '/' || message[0] == '@' || message[0] == 0)
 			{
 				return Plugin_Handled;
 			}
-			for(new i = 1; i < MaxClients; i++)
+			for(int i = 1; i < MaxClients; i++)
 			{
 				if(IsValidClient(i))
 				{
-					if (CheckCommandAccess(i, Access, ADMFLAG_GENERIC))
+					if(CheckCommandAccess(i, Access, ADMFLAG_GENERIC))
 					{
-						receiver = GetClientTeam(i)
+						receiver = GetClientTeam(i);
 						if (sender != receiver)
 						{
-							CPrintToChat(i, "%s%s%s %N : %s", 
+							CPrintToChat(i, "%s%s%s %N : %s",
 								(sender == CS_TEAM_CT) ? "{blue}" : (sender == CS_TEAM_T) ? "{orange}" : "{gray}",
 								IsPlayerAlive(client) ? "" : (sender == CS_TEAM_T) ? TsDead : (sender == CS_TEAM_CT) ? CTsDead : "",
-								(sender == CS_TEAM_CT) ? CTsName : (sender == CS_TEAM_T) ? TsName : "", client, message)
+								(sender == CS_TEAM_CT) ? CTsName : (sender == CS_TEAM_T) ? TsName : "", client, message);
 						}
 					}
 				}
@@ -67,10 +67,10 @@ public Action:OnPlayerChatTeam(client, const String:command[], args)
 	}
 	return Plugin_Continue;
 }
-LoadConfig()
+public LoadConfig()
 {
 	BuildPath(Path_SM, ConfigPath, sizeof(ConfigPath), "configs/ASCHconfig.cfg");
-	new Handle: hConfig = CreateKeyValues("AdminSeeChat");
+	Handle hConfig = CreateKeyValues("AdminSeeChat");
 	if(!FileExists(ConfigPath))
 	{
 		SetFailState("[AdminSeeChat] 'addons/sourcemod/configs/ASCHconfig.cfg' not found!");
@@ -80,11 +80,11 @@ LoadConfig()
 	if(KvJumpToKey(hConfig, "Settings"))
 	{
 		g_iEnable = KvGetNum(hConfig, "Enable", 1);
-		KvGetString(hConfig, "Ts Name", TsName, sizeof(TsName));
-		KvGetString(hConfig, "Ts DeadTag", TsDead, sizeof(TsDead), "*DEAD*");
-		KvGetString(hConfig, "CTs Name", CTsName, sizeof(CTsName));
-		KvGetString(hConfig, "CTs DeadTag", CTsDead, sizeof(CTsDead), "*DEAD*");
-		KvGetString(hConfig, "Command access", Access, sizeof(Access));
+		KvGetString(hConfig, "Ts_Name", TsName, sizeof(TsName), "(Terrorists)");
+		KvGetString(hConfig, "Ts_DeadTag", TsDead, sizeof(TsDead), "*DEAD*");
+		KvGetString(hConfig, "CTs_Name", CTsName, sizeof(CTsName), "(Counter-Terrorists)");
+		KvGetString(hConfig, "CTs_DeadTag", CTsDead, sizeof(CTsDead), "*DEAD*");
+		KvGetString(hConfig, "Command_access", Access, sizeof(Access), "sm_admin");
 	}
 	else
 	{
@@ -92,15 +92,11 @@ LoadConfig()
 		return;
 	}
 }
-
-
-// STOCK
-stock bool:IsValidClient(client, bool:alive = false)
+stock bool IsValidClient(client, bool alive = false)
 {
     if(client >= 1 && client <= MaxClients && IsClientConnected(client) && IsClientInGame(client) && (alive == false || IsPlayerAlive(client)))
     {
         return true;
     }
-
     return false;
 }
